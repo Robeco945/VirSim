@@ -5,5 +5,6 @@ public class Main{
         Infect.giveVaccine(Adam);
         System.out.println("Adam's vaccination status now: "+Adam.getVaccine());
         System.out.println("Adam's illness status : "+Adam.getIllness());
-        }
+
+    }
 }
