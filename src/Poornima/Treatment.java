@@ -1,8 +1,11 @@
-// Treatment.java
+package Poornima;// Poornima.Treatment.java
+
+import Melkamu.Hospital;
+
 public class Treatment extends Hospital {
     public Treatment() {
         // Call parent constructor with name, random service time, and capacity
-        super("Treatment", getRandomServiceTime(), 2);
+        super("Poornima.Treatment", getRandomServiceTime(), 2);
     }
 
     @Override

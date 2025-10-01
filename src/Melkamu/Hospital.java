@@ -1,3 +1,5 @@
+package Melkamu;
+
 public abstract class Hospital {
     private String name;
     private int serviceTime;

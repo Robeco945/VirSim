@@ -1,4 +1,6 @@
-// Main.java
+package Poornima;
+
+// Poornima.Main.java
 public class Main {
     public static void main(String[] args) {
         Treatment treatment = new Treatment();

@@ -1,3 +1,5 @@
+package Roberto;
+
 class Infect{
     public static void infect(Human human){
         human.setIllness(true);
