@@ -1,22 +1,23 @@
 package Roberto;
 
-class Human{
-    private int id;
+import simu.model.Customer;
+
+import java.util.Random;
+
+public class Human extends Customer{
     private boolean illness;
     private int severity; //scale 1 to 10
     private boolean vaccine;
+    private boolean forCheckup;
 
-    public Human(int id, boolean illness, int severity, boolean vaccine){
-        this.id = id;
-        this. illness = illness;
-        this.severity = severity;
-        this.vaccine = vaccine;
-    }
-    public void setID(int id){
-        this.id = id;
-    }
-    public int getID(){
-        return id;
+    public Human(){
+        super();
+        Random rand = new Random();
+        this.illness = rand.nextDouble() < 0.7;
+        if (illness) this.severity = rand.nextInt(10) + 1;
+        if (severity>=7){this.forCheckup = false;}
+        else this.forCheckup = true;
+        this.vaccine = false;
     }
     public void setIllness(boolean illness){
         this.illness = illness;
@@ -24,16 +25,34 @@ class Human{
     public boolean getIllness(){
         return illness;
     }
+
     public void setSeverity(int severity){
         this.severity = severity;
     }
     public int getSeverity(){
         return severity;
     }
+
     public void setVaccine(boolean vaccine){
         this.vaccine = vaccine;
     }
     public boolean getVaccine(){
         return vaccine;
     }
+
+    public void setReason(boolean forCheckup){this.forCheckup = forCheckup;
+    }
+    public boolean getReason() {return forCheckup;
+    }
+
+    @Override
+    public String toString() {
+        return "Human{id=" + getId() +
+                ", illness=" + illness +
+                ", severity=" + severity +
+                ", vaccine=" + vaccine +
+                ", forCheckup=" + forCheckup +
+                '}';
+    }
+
 }

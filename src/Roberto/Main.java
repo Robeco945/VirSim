@@ -2,7 +2,7 @@ package Roberto;
 
 public class Main{
     public static void main(String[] arg){
-        Human Adam = new Human(1, true, 7, false);
+        Human Adam = new Human();
         System.out.println("Adam's vaccination status: "+Adam.getVaccine());
         Infect.giveVaccine(Adam);
         System.out.println("Adam's vaccination status now: "+Adam.getVaccine());

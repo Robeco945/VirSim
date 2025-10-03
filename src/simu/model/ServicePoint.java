@@ -1,5 +1,6 @@
 package simu.model;
 
+import Roberto.Human;
 import eduni.distributions.ContinuousGenerator;
 import simu.framework.*;
 import java.util.LinkedList;
@@ -19,11 +20,20 @@ import java.util.LinkedList;
  * Service point collects measurement parameters.
  */
 public class ServicePoint {
-	private LinkedList<Customer> queue = new LinkedList<>(); // Data Structure used
+	private LinkedList<Human> queue = new LinkedList<>(); // Data Structure used
 	private ContinuousGenerator generator;
 	private EventList eventList;
 	private EventType eventTypeScheduled;
-	//Queuestrategy strategy; // option: ordering of the customer
+    private int totalServed = 0;
+    private double sumServiceTime = 0.0;
+    private double maxQueueLength = 0;
+    public int getTotalServed() { return totalServed; }
+    public double getAvgServiceTime() { return totalServed == 0 ? 0 : sumServiceTime / totalServed; }
+    public int getQueueLength() { return queue.size(); }
+    public double getMaxQueueLength() { return maxQueueLength; }
+
+
+    //Queuestrategy strategy; // option: ordering of the customer
 	private boolean reserved = false;
 
 
@@ -45,8 +55,10 @@ public class ServicePoint {
 	 *
 	 * @param a Customer to be queued
 	 */
-	public void addQueue(Customer a) {	// The first customer of the queue is always in service
+	public void addQueue(Human a) {	// The first customer of the queue is always in service
 		queue.add(a);
+        if(queue.size() > maxQueueLength)
+            maxQueueLength = queue.size();
 	}
 
 	/**
@@ -55,10 +67,14 @@ public class ServicePoint {
 	 *
 	 * @return Customer retrieved from the waiting queue
 	 */
-	public Customer removeQueue() {		// Remove serviced customer
+	public Human removeQueue() {		// Remove serviced customer
 		reserved = false;
-		return queue.poll();
-	}
+        Human h = queue.poll();
+        if (h != null) {
+            totalServed++;
+            sumServiceTime += Clock.getInstance().getClock() - h.getArrivalTime();
+        }
+        return h;	}
 
 	/**
 	 * Begins a new service, customer is on the queue during the service
@@ -66,7 +82,10 @@ public class ServicePoint {
 	 * Inserts a new event to the event list when the service should be ready.
 	 */
 	public void beginService() {		// Begins a new service, customer is on the queue during the service
-		Trace.out(Trace.Level.INFO, "Starting a new service for the customer #" + queue.peek().getId());
+        if (!queue.isEmpty()) {
+            Human Adam = queue.peek();
+            Trace.out(Trace.Level.INFO, "Starting a new service for " + Adam);
+        }
 		
 		reserved = true;
 		double serviceTime = generator.sample();
@@ -88,6 +107,6 @@ public class ServicePoint {
 	 * @return logival value indicating queue status
 	 */
 	public boolean isOnQueue(){
-		return queue.size() != 0;
+		return !queue.isEmpty();
 	}
 }

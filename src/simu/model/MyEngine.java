@@ -1,8 +1,8 @@
 package simu.model;
 
+import Roberto.Human;
 import eduni.distributions.ContinuousGenerator;
 import eduni.distributions.Normal;
-import eduni.distributions.Uniform;
 import simu.framework.*;
 import eduni.distributions.Negexp;
 
@@ -30,7 +30,7 @@ public class MyEngine extends Engine {
 	 * service times.
 	 */
 	public MyEngine() {
-		servicePoints = new ServicePoint[3];
+		servicePoints = new ServicePoint[6];
 
 		if (TEXTDEMO) {
 			/* special setup for the example in text
@@ -92,18 +92,24 @@ public class MyEngine extends Engine {
 				// normal distribution used to model service times
 				serviceTime = new Normal(10, 6, Integer.toUnsignedLong(r.nextInt()));
 
-			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.DEP1);
-			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.DEP2);
-			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DEP3);
+			servicePoints[0] = new ServicePoint(serviceTime, eventList, EventType.DEP_HOSPITAL);
+			servicePoints[1] = new ServicePoint(serviceTime, eventList, EventType.DEP_TREATMENT);
+			servicePoints[2] = new ServicePoint(serviceTime, eventList, EventType.DEP_AFTERCARE);
+            servicePoints[3] = new ServicePoint(serviceTime, eventList, EventType.DEP_CHECKUP);
+            servicePoints[4] = new ServicePoint(serviceTime, eventList, EventType.DEP_VACCINE);
+            servicePoints[5] = new ServicePoint(serviceTime, eventList, EventType.DEP_MORGUE);
 
-			arrivalProcess = new ArrivalProcess(arrivalTime, eventList, EventType.ARR1);
+			arrivalProcess = new ArrivalProcess(arrivalTime, eventList, EventType.ARR_HOSPITAL);
 		} else {
 			/* more realistic simulation case with variable customer arrival times and service times */
-			servicePoints[0] = new ServicePoint(new Normal(10, 6), eventList, EventType.DEP1);
-			servicePoints[1] = new ServicePoint(new Normal(10, 10), eventList, EventType.DEP2);
-			servicePoints[2] = new ServicePoint(new Normal(5, 3), eventList, EventType.DEP3);
+			servicePoints[0] = new ServicePoint(new Normal(5, 3), eventList, EventType.DEP_HOSPITAL);
+			servicePoints[1] = new ServicePoint(new Normal(10, 10), eventList, EventType.DEP_TREATMENT);
+			servicePoints[2] = new ServicePoint(new Normal(15, 5), eventList, EventType.DEP_AFTERCARE);
+            servicePoints[3] = new ServicePoint(new Normal(10, 3), eventList, EventType.DEP_CHECKUP);
+            servicePoints[4] = new ServicePoint(new Normal(5, 2), eventList, EventType.DEP_VACCINE);
+            servicePoints[5] = new ServicePoint(new Normal(5, 2), eventList, EventType.DEP_MORGUE);
 
-			arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARR1);
+			arrivalProcess = new ArrivalProcess(new Negexp(15, 5), eventList, EventType.ARR_HOSPITAL);
 		}
 	}
 
@@ -114,26 +120,46 @@ public class MyEngine extends Engine {
 
 	@Override
 	protected void runEvent(Event t) {  // B phase events
-		Customer a;
+		Human a;
 
 		switch ((EventType)t.getType()) {
-		case ARR1:
-			servicePoints[0].addQueue(new Customer());
+		case ARR_HOSPITAL:
+			servicePoints[0].addQueue(new Human());
 			arrivalProcess.generateNextEvent();
 			break;
 
-		case DEP1:
+		case DEP_HOSPITAL:
 			a = servicePoints[0].removeQueue();
-			servicePoints[1].addQueue(a);
+            if(a.getReason()){servicePoints[3].addQueue(a);}
+			else {servicePoints[1].addQueue(a);}
 			break;
 
-		case DEP2:
+		case DEP_TREATMENT:
 			a = servicePoints[1].removeQueue();
-			servicePoints[2].addQueue(a);
+            if(a.getSeverity()>=9){
+                servicePoints[5].addQueue(a);
+                a.setRemovalTime(Clock.getInstance().getClock());
+                a.reportResults();
+                break;
+            }
+			else{a.setIllness(false);
+                servicePoints[2].addQueue(a);}
 			break;
 
-		case DEP3:
-			a = servicePoints[2].removeQueue();
+        case DEP_AFTERCARE:
+             a = servicePoints[2].removeQueue();
+             servicePoints[3].addQueue(a);
+             break;
+
+        case DEP_CHECKUP:
+             a = servicePoints[3].removeQueue();
+             if(a.getIllness()){servicePoints[1].addQueue(a);}
+             else {servicePoints[4].addQueue(a);}
+             break;
+
+		case DEP_VACCINE:
+			a = servicePoints[4].removeQueue();
+            a.setVaccine(true);
 			a.setRemovalTime(Clock.getInstance().getClock());
 		    a.reportResults();
 			break;
@@ -149,9 +175,24 @@ public class MyEngine extends Engine {
 		}
 	}
 
-	@Override
-	protected void results() {
-		System.out.println("Simulation ended at " + Clock.getInstance().getClock());
-		System.out.println("Results ... are currently missing");
-	}
+    @Override
+    protected void results() {
+        System.out.println("Simulation ended at " + Clock.getInstance().getClock());
+        for (int i = 0; i < servicePoints.length; i++) {
+            ServicePoint sp = servicePoints[i];
+            System.out.println("ServicePoint " + i + ": served=" + sp.getTotalServed() +
+                    ", avgTime=" + sp.getAvgServiceTime() +
+                    ", maxQueue=" + sp.getMaxQueueLength());
+        }
+        int totalCustomers = 0;
+        double totalServiceTime = 0;
+        for (ServicePoint sp: servicePoints) {
+            totalCustomers += sp.getTotalServed();
+            totalServiceTime += sp.getAvgServiceTime() * sp.getTotalServed();
+        }
+        System.out.println("Total customers serviced: " + totalCustomers);
+        System.out.println("Overall mean service time: " + (totalCustomers == 0 ? 0 : totalServiceTime / totalCustomers));
+
+    }
+
 }

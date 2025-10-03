@@ -1,4 +1,4 @@
-package eduni.distribution;
+package eduni.distributions;
 
 import java.io.PrintWriter;
 import java.io.FileWriter;

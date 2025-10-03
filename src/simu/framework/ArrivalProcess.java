@@ -1,6 +1,6 @@
 package simu.framework;
 
-import eduni.distribution.ContinuousGenerator;
+import eduni.distributions.ContinuousGenerator;
 
 /**
  * ArrivalProcess produces the time when next customer arrivals. This is based on the

@@ -1,4 +1,4 @@
-package eduni.distribution;
+package eduni.distributions;
 
 /**
  * Error thrown when a distribution is passed incorrect parameters.

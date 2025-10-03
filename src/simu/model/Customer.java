@@ -68,7 +68,8 @@ public class Customer {
 	 * Report the measured variables of the customer. In this case to the diagnostic output.
 	 */
 	public void reportResults() {
-		Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
+        Trace.out(Trace.Level.INFO, "Customer details: " + this.toString());
+        Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
 		Trace.out(Trace.Level.INFO, "Customer "   + id + " arrived: " + arrivalTime);
 		Trace.out(Trace.Level.INFO,"Customer "    + id + " removed: " + removalTime);
 		Trace.out(Trace.Level.INFO,"Customer "    + id + " stayed: "  + (removalTime - arrivalTime));
