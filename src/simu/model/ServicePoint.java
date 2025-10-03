@@ -25,9 +25,12 @@ public class ServicePoint {
 	private EventList eventList;
 	private EventType eventTypeScheduled;
     private int totalServed = 0;
+    public int totalDead = 0;
     private double sumServiceTime = 0.0;
     private double maxQueueLength = 0;
     public int getTotalServed() { return totalServed; }
+    public int getTotalDead() { return totalDead; }
+
     public double getAvgServiceTime() { return totalServed == 0 ? 0 : sumServiceTime / totalServed; }
     public int getQueueLength() { return queue.size(); }
     public double getMaxQueueLength() { return maxQueueLength; }
@@ -73,6 +76,7 @@ public class ServicePoint {
         if (h != null) {
             totalServed++;
             sumServiceTime += Clock.getInstance().getClock() - h.getArrivalTime();
+            if (h.isDead()){totalDead++;}
         }
         return h;	}
 

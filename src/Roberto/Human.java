@@ -9,6 +9,7 @@ public class Human extends Customer{
     private int severity; //scale 1 to 10
     private boolean vaccine;
     private boolean forCheckup;
+    private boolean dead;
 
     public Human(){
         super();
@@ -44,15 +45,23 @@ public class Human extends Customer{
     }
     public boolean getReason() {return forCheckup;
     }
+    public void setDead(boolean dead){
+        this.dead = dead;
+    }
+
+    public boolean isDead(){
+        return dead;
+    }
 
     @Override
     public String toString() {
-        return "Human{id=" + getId() +
+        return "Human information: id=" + getId() +
                 ", illness=" + illness +
                 ", severity=" + severity +
                 ", vaccine=" + vaccine +
                 ", forCheckup=" + forCheckup +
-                '}';
+                ", dead=" + dead
+                ;
     }
 
 }

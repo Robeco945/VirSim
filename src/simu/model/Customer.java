@@ -1,5 +1,6 @@
 package simu.model;
 
+import Roberto.Human;
 import simu.framework.*;
 
 /**
@@ -21,7 +22,7 @@ public class Customer {
 	    id = i++;
 	    
 		arrivalTime = Clock.getInstance().getClock();
-		Trace.out(Trace.Level.INFO, "New customer #" + id + " arrived at  " + arrivalTime);
+		Trace.out(Trace.Level.INFO, "New patient #" + id + " arrived at  " + arrivalTime);
 	}
 
 	/**
@@ -67,15 +68,19 @@ public class Customer {
 	/**
 	 * Report the measured variables of the customer. In this case to the diagnostic output.
 	 */
-	public void reportResults() {
-        Trace.out(Trace.Level.INFO, "Customer details: " + this.toString());
-        Trace.out(Trace.Level.INFO, "\nCustomer " + id + " ready! ");
-		Trace.out(Trace.Level.INFO, "Customer "   + id + " arrived: " + arrivalTime);
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " removed: " + removalTime);
-		Trace.out(Trace.Level.INFO,"Customer "    + id + " stayed: "  + (removalTime - arrivalTime));
+    public void reportResults() {
+        // Check if the patient is dead
+        String status = (this instanceof Human && ((Human)this).isDead()) ? "DIED :(" : "LEFT";
 
-		sum += (removalTime - arrivalTime);
-		double mean = sum/id;
-		System.out.println("Current mean of the customer service times " + mean);
-	}
+        Trace.out(Trace.Level.INFO, "Patient details: " + this.toString());
+        Trace.out(Trace.Level.INFO, "\nPatient " + id + " has " + status);
+        Trace.out(Trace.Level.INFO, "Patient " + id + " arrived: " + arrivalTime);
+        Trace.out(Trace.Level.INFO, "Patient " + id + " removed: " + removalTime);
+        Trace.out(Trace.Level.INFO, "Patient " + id + " stayed: " + (removalTime - arrivalTime));
+
+        sum += (removalTime - arrivalTime);
+        double mean = sum / id;
+        System.out.println("Current mean of the patient service times " + mean);
+    }
+
 }

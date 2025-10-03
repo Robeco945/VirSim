@@ -11,7 +11,7 @@ public class RunTest {
 
         // Create and run the simulation
         MyEngine engine = new MyEngine();
-        engine.setSimulationTime(100); // simulation time
+        engine.setSimulationTime(1000); // simulation time
         engine.run();
     }
 }

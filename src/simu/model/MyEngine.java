@@ -138,8 +138,6 @@ public class MyEngine extends Engine {
 			a = servicePoints[1].removeQueue();
             if(a.getSeverity()>=9){
                 servicePoints[5].addQueue(a);
-                a.setRemovalTime(Clock.getInstance().getClock());
-                a.reportResults();
                 break;
             }
 			else{a.setIllness(false);
@@ -160,9 +158,20 @@ public class MyEngine extends Engine {
 		case DEP_VACCINE:
 			a = servicePoints[4].removeQueue();
             a.setVaccine(true);
+            a.setDead(false);
 			a.setRemovalTime(Clock.getInstance().getClock());
 		    a.reportResults();
 			break;
+
+
+        case DEP_MORGUE:
+             a = servicePoints[5].removeQueue();
+             a.setDead(true);
+             a.setRemovalTime(Clock.getInstance().getClock());
+             a.reportResults();
+             break;
+
+
 		}
 	}
 
@@ -177,6 +186,7 @@ public class MyEngine extends Engine {
 
     @Override
     protected void results() {
+        int totalDead = servicePoints[5].getTotalServed();
         System.out.println("Simulation ended at " + Clock.getInstance().getClock());
         for (int i = 0; i < servicePoints.length; i++) {
             ServicePoint sp = servicePoints[i];
@@ -190,7 +200,8 @@ public class MyEngine extends Engine {
             totalCustomers += sp.getTotalServed();
             totalServiceTime += sp.getAvgServiceTime() * sp.getTotalServed();
         }
-        System.out.println("Total customers serviced: " + totalCustomers);
+        System.out.println("Total patients serviced: " + totalCustomers);
+        System.out.println("Total patients death count: " + totalDead +" :(");
         System.out.println("Overall mean service time: " + (totalCustomers == 0 ? 0 : totalServiceTime / totalCustomers));
 
     }
