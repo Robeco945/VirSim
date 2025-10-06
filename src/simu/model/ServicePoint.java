@@ -40,7 +40,19 @@ public class ServicePoint {
 		Human h = queue.poll();
         if (h != null) {
             totalServed++;
-            sumServiceTime += Clock.getInstance().getClock() - h.getArrivalTime();
+            double serviceTime = Clock.getInstance().getClock() - h.getArrivalTime();
+            sumServiceTime += serviceTime;
+            // CSV logging
+            try (java.io.FileWriter fw = new java.io.FileWriter("service_log.csv", true)) {
+                fw.write(String.format("%f,%d,%f,%d\n",
+                    Clock.getInstance().getClock(),
+                    h.hashCode(),
+                    serviceTime,
+                    queue.size()
+                ));
+            } catch (java.io.IOException e) {
+                System.err.println("CSV logging failed: " + e.getMessage());
+            }
         }
         return h;
 	}
