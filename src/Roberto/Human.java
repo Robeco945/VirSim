@@ -52,7 +52,7 @@ public class Human extends Customer{
     public boolean isDead(){
         return dead;
     }
-
+/*
     @Override
     public String toString() {
         return "Human information: id=" + getId() +
@@ -63,5 +63,5 @@ public class Human extends Customer{
                 ", dead=" + dead
                 ;
     }
-
+*/
 }
