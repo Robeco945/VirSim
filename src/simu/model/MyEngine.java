@@ -10,11 +10,12 @@ import simu.framework.Clock;
 import simu.framework.Engine;
 import simu.framework.Event;
 import java.util.Random;
+import csvLogger.CSVLogger;
 
 
 public class MyEngine extends Engine {
 	private ArrivalProcess arrivalProcess;
-    public static final boolean TEXTDEMO = false;
+    public static final boolean TEXTDEMO = true;
     public static final boolean FIXEDARRIVALTIMES = false;
     public static final boolean FXIEDSERVICETIMES = false;
 
@@ -120,13 +121,13 @@ public class MyEngine extends Engine {
                 break;
 
             case DEP_HOSPITAL:
-                a = servicePoints[0].removeQueue();
+                a = servicePoints[0].removeQueue("HOSPITAL");
                 if(a.getReason()){servicePoints[3].addQueue(a);}
                 else {servicePoints[1].addQueue(a);}
                 break;
 
             case DEP_TREATMENT:
-                a = servicePoints[1].removeQueue();
+                a = servicePoints[1].removeQueue("TREATMENT");
                 if(a.getSeverity()>=9){
                     servicePoints[5].addQueue(a);
                     break;
@@ -136,18 +137,18 @@ public class MyEngine extends Engine {
                 break;
 
             case DEP_AFTERCARE:
-                a = servicePoints[2].removeQueue();
+                a = servicePoints[2].removeQueue("AFTERCARE");
                 servicePoints[3].addQueue(a);
                 break;
 
             case DEP_CHECKUP:
-                a = servicePoints[3].removeQueue();
+                a = servicePoints[3].removeQueue("CHECKUP");
                 if(a.getIllness()){servicePoints[1].addQueue(a);}
                 else {servicePoints[4].addQueue(a);}
                 break;
 
             case DEP_VACCINE:
-                a = servicePoints[4].removeQueue();
+                a = servicePoints[4].removeQueue("VACCINE");
                 a.setVaccine(true);
                 a.setDead(false);
                 a.setRemovalTime(Clock.getInstance().getClock());
@@ -156,7 +157,7 @@ public class MyEngine extends Engine {
 
 
             case DEP_MORGUE:
-                a = servicePoints[5].removeQueue();
+                a = servicePoints[5].removeQueue("MORGUE");
                 a.setDead(true);
                 a.setRemovalTime(Clock.getInstance().getClock());
                 a.reportResults();
@@ -190,4 +191,5 @@ public class MyEngine extends Engine {
         // NEW GUI
 		controller.showEndTime(Clock.getInstance().getClock());
 	}
+
 }

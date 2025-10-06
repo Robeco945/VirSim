@@ -19,6 +19,9 @@ public class Customer {
 		arrivalTime = Clock.getInstance().getClock();
 		Trace.out(Trace.Level.INFO, "New customer #" + id + " arrived at  " + arrivalTime);
 	}
+    public int getID() {
+        return id;
+    }
 
 	public double getRemovalTime() {
 		return removalTime;

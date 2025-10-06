@@ -4,6 +4,12 @@ import Roberto.Human;
 import eduni.distributions.ContinuousGenerator;
 import simu.framework.*;
 import java.util.LinkedList;
+import csvLogger.CSVLogger;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 // TODO:
 // Service Point functionalities & calculations (+ variables needed) and reporting to be implemented
@@ -35,20 +41,18 @@ public class ServicePoint {
         if(queue.size() > maxQueueLength) maxQueueLength = queue.size();
 	}
 
-	public Human removeQueue(){		// Remove serviced customer
-		reserved = false;
+	public Human removeQueue(String exitNode){		// Remove serviced customer
+        reserved = false;
 		Human h = queue.poll();
         if (h != null) {
             totalServed++;
             double serviceTime = Clock.getInstance().getClock() - h.getArrivalTime();
             sumServiceTime += serviceTime;
             // CSV logging
+
             try (java.io.FileWriter fw = new java.io.FileWriter("service_log.csv", true)) {
-                fw.write(String.format("%f,%d,%f,%d\n",
-                    Clock.getInstance().getClock(),
-                    h.hashCode(),
-                    serviceTime,
-                    queue.size()
+                fw.write(String.format("id: %d,arrival time: %f,time: %f,service point: %s,service time: %f\n",
+                    h.getID(), h.getArrivalTime(), Clock.getInstance().getClock(), exitNode, serviceTime
                 ));
             } catch (java.io.IOException e) {
                 System.err.println("CSV logging failed: " + e.getMessage());
