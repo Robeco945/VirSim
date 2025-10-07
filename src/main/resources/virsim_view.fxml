@@ -7,10 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
-   <left>
-      <Pane id="displayContainer" fx:id="displayContainer" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
-   </left>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -23,4 +20,7 @@
    <right>
       <ListView id="serviceLog" fx:id="serviceLog" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </right>
+   <center>
+      <Pane id="displayContainer" fx:id="displayContainer" prefHeight="600.0" prefWidth="800.0" BorderPane.alignment="CENTER" />
+   </center>
 </BorderPane>

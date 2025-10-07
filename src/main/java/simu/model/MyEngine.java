@@ -17,7 +17,9 @@ public class MyEngine extends Engine {
     public static final boolean TEXTDEMO = true;
     public static final boolean FIXEDARRIVALTIMES = false;
     public static final boolean FXIEDSERVICETIMES = false;
-
+    private static final String[] SERVICE_POINT_NAMES = {
+            "HOSPITAL", "TREATMENT", "AFTERCARE", "CHECKUP", "VACCINE", "MORGUE"
+    };
 
 	public MyEngine(IControllerMtoV controller){ // NEW
 		super(controller); // NEW
@@ -116,35 +118,51 @@ public class MyEngine extends Engine {
 
         switch ((EventType)t.getType()) {
             case ARR_HOSPITAL:
-                servicePoints[0].addQueue(new Human());
+                a = new Human();
+                servicePoints[0].addQueue(a);
+                controller.visualiseHumanArrival(a.getID(), SERVICE_POINT_NAMES[0], a.getIllness(), a.getSeverity());
                 arrivalProcess.generateNext();
                 break;
 
             case DEP_HOSPITAL:
                 a = servicePoints[0].removeQueue("HOSPITAL");
-                if(a.getReason()){servicePoints[3].addQueue(a);}
-                else {servicePoints[1].addQueue(a);}
+                if(a.getReason()){
+                    servicePoints[3].addQueue(a);
+                    controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[3], a.getIllness(), a.getSeverity());
+                }
+                else {
+                    servicePoints[1].addQueue(a);
+                    controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[1], a.getIllness(), a.getSeverity());
+                }
                 break;
 
             case DEP_TREATMENT:
                 a = servicePoints[1].removeQueue("TREATMENT");
                 if(a.getSeverity()>=9){
                     servicePoints[5].addQueue(a);
-                    break;
+                    controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[5], a.getIllness(), a.getSeverity());
+                } else {
+                    a.setIllness(false);
+                    servicePoints[2].addQueue(a);
+                    controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[2], a.getIllness(), a.getSeverity());
                 }
-                else{a.setIllness(false);
-                    servicePoints[2].addQueue(a);}
                 break;
 
             case DEP_AFTERCARE:
                 a = servicePoints[2].removeQueue("AFTERCARE");
                 servicePoints[3].addQueue(a);
+                controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[3], a.getIllness(), a.getSeverity());
                 break;
 
             case DEP_CHECKUP:
                 a = servicePoints[3].removeQueue("CHECKUP");
-                if(a.getIllness()){servicePoints[1].addQueue(a);}
-                else {servicePoints[4].addQueue(a);}
+                if(a.getIllness()){
+                    servicePoints[1].addQueue(a);
+                    controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[1], a.getIllness(), a.getSeverity());
+                } else {
+                    servicePoints[4].addQueue(a);
+                    controller.visualiseHumanMove(a.getID(), SERVICE_POINT_NAMES[4], a.getIllness(), a.getSeverity());
+                }
                 break;
 
             case DEP_VACCINE:
@@ -153,6 +171,7 @@ public class MyEngine extends Engine {
                 a.setDead(false);
                 a.setRemovalTime(Clock.getInstance().getClock());
                 a.reportResults();
+                controller.visualiseHumanDeparture(a.getID());
                 break;
 
 
@@ -161,6 +180,7 @@ public class MyEngine extends Engine {
                 a.setDead(true);
                 a.setRemovalTime(Clock.getInstance().getClock());
                 a.reportResults();
+                controller.visualiseHumanDeparture(a.getID());
                 break;
 
 

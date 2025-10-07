@@ -44,7 +44,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
                 System.exit(0);
             });
             primaryStage.setTitle("Simulator");
-            display = new Visualisation2(400,200);
+            display = new Visualisation(800,600);
             displayContainer.getChildren().add((Canvas) display);
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
