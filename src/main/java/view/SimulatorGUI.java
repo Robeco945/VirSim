@@ -48,6 +48,7 @@ public class SimulatorGUI extends Application implements ISimulatorUI {
             displayContainer.getChildren().add((Canvas) display);
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
+            root.requestFocus();
         } catch(Exception e) {
             e.printStackTrace();
         }
