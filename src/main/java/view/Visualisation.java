@@ -21,6 +21,8 @@ public class Visualisation extends Canvas implements IVisualisation {
     private static final double QUEUE_COLUMN_SPACING = 15.0;
     private static final double QUEUE_ROW_SPACING = 15.0;
     private static final double QUEUE_VERTICAL_OFFSET = 20.0;
+    private int totalMorgue = 0;
+    private int totalVaccine = 0;
 
     private static class VisualHuman {
         int id;
@@ -28,7 +30,7 @@ public class Visualisation extends Canvas implements IVisualisation {
         boolean isIll;
         int severity;
         Color color;
-        static final double SPEED = 2.0;
+        static final double SPEED = 5.0;
 
         VisualHuman(int id, double startX, double startY, boolean isIll, int severity) {
             this.id = id;
@@ -97,6 +99,13 @@ public class Visualisation extends Canvas implements IVisualisation {
         gc.setFill(Color.BLACK);
         gc.fillRect(0, 0, this.getWidth(), this.getHeight());
 
+
+        String morgueText = "Total Morgue: " + totalMorgue;
+        String vaccineText = "Total Vaccinated: " + totalVaccine;
+        gc.setFill(Color.LIGHTGREEN);
+        gc.fillText(morgueText, 650, 50);
+        gc.fillText(vaccineText, 650, 350);
+
         for (VisualServicePoint sp : servicePoints.values()) {
             gc.setFill(Color.CORNFLOWERBLUE);
             gc.fillRoundRect(sp.x, sp.y, sp.width, sp.height, 10, 10);
@@ -120,6 +129,8 @@ public class Visualisation extends Canvas implements IVisualisation {
     public void clearDisplay() {
         Platform.runLater(() -> {
             humans.clear();
+            totalMorgue = 0;
+            totalVaccine = 0;
             servicePoints.values().forEach(sp -> sp.humanQueue.clear());
         });
     }
@@ -140,6 +151,8 @@ public class Visualisation extends Canvas implements IVisualisation {
         Platform.runLater(() -> {
             VisualHuman vHuman = humans.get(humanId);
             VisualServicePoint targetSP = servicePoints.get(toServicePointName);
+            if (toServicePointName.equals("MORGUE")) totalMorgue++;
+            if (toServicePointName.equals("VACCINE")) totalVaccine++;
             if (vHuman == null || targetSP == null) return;
 
             vHuman.updateState(isIll, severity);
